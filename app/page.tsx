@@ -373,10 +373,18 @@ function Projects() {
 
 function Contact() {
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setSending(true);
+    await fetch("https://formspree.io/f/xaqkdyqe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(form),
+    });
+    setSending(false);
     setSent(true);
   }
 
@@ -448,9 +456,10 @@ function Contact() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-[#C1440E] text-white px-7 py-4 rounded-xl text-sm font-semibold hover:bg-[#A83A0C] transition-colors duration-200"
+                disabled={sending}
+                className="w-full bg-[#C1440E] text-white px-7 py-4 rounded-xl text-sm font-semibold hover:bg-[#A83A0C] transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Verstuur bericht
+                {sending ? "Versturen..." : "Verstuur bericht"}
               </button>
             </form>
           )}
